@@ -7,10 +7,100 @@ import subprocess
 
 
 #   Buttons
+#   ADD FIRST ITEM TO NEW ITEM BOX
 def add_item_btn(new_items, menu, meal_menu, root_win, db):
     #   Meal Menu Buttons.
     add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win, db))
     return add_button
+#   CREATE NEW TABLE
+def create_btn(db, new_items):
+    create_button = tk.Button(text='CREATE', command=lambda: create_table(db, new_items))
+    create_button.grid(row=2, column=1)
+    return create_button
+#   REMOVE ITEM FROM NEW ITEMS BOX
+def rem_btn(root_win, box, new_items):
+    remove_button = tk.Button(text='REMOVE', command=lambda: remove_item(root_win, box, new_items))
+    return remove_button
+#   RESET NEW ITEMS BOX
+def rst_btn(root_win, new_items):
+    reset_button = tk.Button(text='RESET', command=lambda: reset_new_items(root_win, new_items))
+    return reset_button
+#   UPDATE TABLE BUTTON
+def upd_btn(db, entries, tables, root_win, menu, new_items):
+    update_button = tk.Button(text='UPDATE', command=lambda: update_table(db, entries, tables, root_win, menu, new_items))
+    return update_button
+#   DELETES SELECTED TABLE FROM DB
+def del_btn(db, tables_list, tables):
+    delete_button = tk.Button(text='DELETE', command=lambda: del_table(db, tables_list, tables))
+    return delete_button
+
+
+#   UPDATES DATA IN DB
+# def upd_data(db, table_name, new_items):
+#     conn = sql.connect(db)
+#     c = conn.cursor()
+#     c.execute(f'select * from "{table_name}"')
+#     old_values = [old_value for old_value in c.fetchall()[0]]
+#     old_calories, old_protein, old_carbs, old_fiber, old_fat, old_cholesterol, old_calcium, old_iron, old_magnesium, \
+#     old_sodium, old_zinc, old_vitamin_a, old_thiamine, old_vitamin_e, old_riboflavin, old_niacin, old_vitamin_b6, \
+#     old_vitamin_c, old_vitamin_b12, old_selenium, old_sugar, old_vitamin_d = old_values
+#     print(old_values)
+#     print(new_items)
+#
+#     counts = pd.value_counts(new_items)
+#     unique_keys = set(new_items)
+#
+#     new_calories = 0
+#     new_protein = 0
+#     new_carbs = 0
+#     new_fiber = 0
+#     new_fat = 0
+#     new_cholesterol = 0
+#     new_calcium = 0
+#     new_iron = 0
+#     new_magnesium = 0
+#     new_sodium = 0
+#     new_zinc = 0
+#     new_vitamin_a = 0
+#     new_thiamine = 0
+#     new_vitamin_e = 0
+#     new_riboflavin = 0
+#     new_niacin = 0
+#     new_vitamin_b6 = 0
+#     new_vitamin_c = 0
+#     new_vitamin_b12 = 0
+#     new_selenium = 0
+#     new_sugar = 0
+#     new_vitamin_d = 0
+#
+#     for key in unique_keys:
+#         count = counts[key]
+#
+#         new_calories += food.foods[key]['calories'] * count
+#         new_protein += food.foods[key]['protein'] * count
+#         new_carbs += food.foods[key]['carbs'] * count
+#         new_fiber += food.foods[key]['fiber'] * count
+#         new_fat += food.foods[key]['fat'] * count
+#         new_cholesterol += food.foods[key]['cholesterol'] * count
+#         new_calcium += food.foods[key]['calcium'] * count
+#         new_iron += food.foods[key]['iron'] * count
+#         new_magnesium += food.foods[key]['magnesium'] * count
+#         new_sodium += food.foods[key]['sodium'] * count
+#         new_zinc += food.foods[key]['zinc'] * count
+#         new_vitamin_a += food.foods[key]['vitamin a'] * count
+#         new_thiamine += food.foods[key]['thiamine'] * count
+#         new_vitamin_e += food.foods[key]['vitamin e'] * count
+#         new_riboflavin += food.foods[key]['riboflavin'] * count
+#         new_niacin += food.foods[key]['niacin'] * count
+#         new_vitamin_b6 += food.foods[key]['vitamin b6'] * count
+#         new_vitamin_c += food.foods[key]['vitamin c'] * count
+#         new_vitamin_b12 += food.foods[key]['vitamin b12'] * count
+#         new_selenium += food.foods[key]['selenium'] * count
+#         new_sugar += food.foods[key]['sugar'] * count
+#         new_vitamin_d += food.foods[key]['vitamin d'] * count
+#
+#     print(new_calories, old_calories)
+#     c.execute('UPDATE QUERY GOES HERE//ALL DATA COLLECTED AND SAVED UP TO THIS POINT')
 
 
 def table_list(db, root_win):
@@ -129,7 +219,7 @@ def insert_data(db, table, data):
         vitamin_d += food.foods[key]['vitamin d'] * count
 
     c.execute(
-        f'insert into {table} values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
+        f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
         f'{magnesium}, {sodium}, {zinc}, {vitamin_a}, {thiamine}, {vitamin_e}, {riboflavin}, {niacin}, {vitamin_b6}, '
         f'{vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d})')
 
@@ -172,27 +262,23 @@ def new_items_box(root_win, new_items):
 
     return new_box
 
-def items_to_add_box():
-    pass
 
+# def items_to_add_box():
+#     pass
+#
 
 def add_new_item(new_items, items, meal_box, root_win, db):
     #   Add selected item to items to add list
     new_items.append(items[selected_item(meal_box)])
 
+    new_box = new_items_box(root_win, new_items)
+    new_box.grid(row=1, column=1)
 
-
-    # new_box = new_items_box(root_win, new_items)
-    # new_box.grid(row=1, column=1)
-
-    #   After adding all items, create the table in db along with data.
-    create_button = tk.Button(text='CREATE', command=lambda: create_table(db, new_items))
-    create_button.grid(row=2, column=1)
-
-    remove_button = tk.Button(text='REMOVE', command=lambda: remove_item(root_win, new_box, new_items))
-    remove_button.grid(row=3, column=0)
-    reset_button = tk.Button(text='RESET', command=lambda: reset_new_items(root_win, new_items))
-    reset_button.grid(row=4, column=0)
+    #   After adding all items, create the table in db along with data
+    rmv_btn = rem_btn(root_win, new_box, new_items)
+    rmv_btn.grid(row=3, column=0)
+    reset_btn = rst_btn(root_win, new_items)
+    reset_btn.grid(row=4, column=0)
 
 
 def remove_item(root_win, items_box, new_items):
@@ -239,9 +325,11 @@ def feature_branch(choice, root_win, menu, new_items, db):
         meal_box.grid(row=1, column=0)
         add_btn = add_item_btn(new_items, menu, meal_box, root_win, db)
         add_btn.grid(row=2, column=0)
+        crt_btn = create_btn(db, new_items)
+        crt_btn.grid(row=2, column=1)
     elif choice == 'Update?':
-        tables_list = table_list(db, root_win)
-        tables_list.grid(row=1, column=0)
+        entries_list = table_list(db, root_win)
+        entries_list.grid(row=1, column=0)
 
         conn = sql.connect(db)
         c = conn.cursor()
@@ -249,11 +337,10 @@ def feature_branch(choice, root_win, menu, new_items, db):
         tables = [table for table in c.fetchall()]
 
         #   Buttons.
-        update_button = tk.Button(text='UPDATE', command=lambda: update_table(db, tables_list, tables, root_win, menu, new_items))
+        update_button = upd_btn(db, entries_list, tables, root_win, menu, new_items)
         update_button.grid(row=2, column=0)
-        del_btn = tk.Button(text='DELETE', command=lambda: del_table(db, tables_list, tables))
-        del_btn.grid(row=3, column=0)
-
+        delete_button = del_btn(db, entries_list, tables)
+        delete_button.grid(row=3, column=0)
     elif choice == 'View?':
         tables_list = table_list(db, root_win)
         tables_list.grid(row=1, column=0)
@@ -269,18 +356,20 @@ def feature_branch(choice, root_win, menu, new_items, db):
         exit_loop(root_win)
 
 
-#   Update a chosen file from a list.
+#   Update a chosen file from a list (CALLED BY "UPD_BTN")
 def update_table(db, entries_box, entries, root_win, menu, new_items):
+    #   CLEAR SPACE
     selection = entries[selected_item(entries_box)][0]
+    new_items.clear()
+    print(selection)
 
-    conn = sql.connect(db)
-    c = conn.cursor()
-    c.execute(f'select * from "{selection}"')
-    old_values = [old_value for old_value in c.fetchall()[0]]
-    old_calories, old_protein, old_carbs, old_fiber, old_fat, old_cholesterol, old_calcium, old_iron, old_magnesium, \
-    old_sodium, old_zinc, old_vitamin_a, old_thiamine, old_vitamin_e, old_riboflavin, old_niacin, old_vitamin_b6, \
-    old_vitamin_c, old_vitamin_b12, old_selenium, old_sugar, old_vitamin_d = old_values
-
-#    Destroy entries box
     meals_box = meals_menu(root_win, menu, new_items, db)
     meals_box.grid(row=1, column=0)
+    add_items_button = add_item_btn(new_items, menu, meals_box, root_win, db)
+    add_items_button.grid(row=2, column=0)
+    update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
+    update_data_button.grid(row=2, column=1)
+
+#    Destroy entries box
+#     meals_box = meals_menu(root_win, menu, new_items, db)
+#     meals_box.grid(row=1, column=0)
