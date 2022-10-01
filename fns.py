@@ -35,7 +35,7 @@ def del_btn(db, tables_list, tables):
     return delete_button
 
 
-#   BOXES
+#   Boxes
 #   ENTRIES BOX
 def table_list(db, root_win):
     conn = sql.connect(db)
@@ -87,8 +87,8 @@ def meals_menu(root_win, menu, new_items, db):
 
     return meal_menu
 
-#   BRANCHES
-#   CREATE BRANCH
+#   Branches
+#   Create Branch
 #   ADDS NEW ITEM TO NEW ITEMS BOX / LIST
 def add_new_item(new_items, items, meal_box, root_win):
     #   Add selected item to items to add list
@@ -136,8 +136,8 @@ def reset_new_items(root_win, new_items):
     new_items.clear()
     new_box = new_items_box(root_win, new_items)
     new_box.grid(row=1, column=1)
-#   UPDATE BRANCH
-#   Update a chosen file from a list (CALLED BY "UPD_BTN")
+#   Update Branch
+#   UPDATE SELECTION FROM ENTRIES (CALLED BY "UPD_BTN")
 def update_table(db, entries_box, entries, root_win, menu, new_items):
     #   CLEAR SPACE
     selection = entries[selected_item(entries_box)][0]
@@ -159,7 +159,7 @@ def del_table(db, box, entries):
     c.execute(f'drop table "{selection}"')
 
     box.grid_remove()
-#   VIEW BRANCH
+#   View Branch
 def view_table(db, box, entries, btn):
     selection = entries[selected_item(box)]
     file_name = 'view_selection.csv'
@@ -185,7 +185,7 @@ def view_table(db, box, entries, btn):
     box.grid_remove()
 
 
-#   MISC
+#   Misc
 def selected_item(box):
     for index in box.curselection():
         return index
