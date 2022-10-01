@@ -8,9 +8,9 @@ import subprocess
 
 #   Buttons
 #   ADD FIRST ITEM TO NEW ITEM BOX
-def add_item_btn(new_items, menu, meal_menu, root_win, db):
+def add_item_btn(new_items, menu, meal_menu, root_win):
     #   Meal Menu Buttons.
-    add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win, db))
+    add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win))
     return add_button
 #   CREATE NEW TABLE
 def create_btn(db, new_items):
@@ -35,74 +35,8 @@ def del_btn(db, tables_list, tables):
     return delete_button
 
 
-#   UPDATES DATA IN DB
-# def upd_data(db, table_name, new_items):
-#     conn = sql.connect(db)
-#     c = conn.cursor()
-#     c.execute(f'select * from "{table_name}"')
-#     old_values = [old_value for old_value in c.fetchall()[0]]
-#     old_calories, old_protein, old_carbs, old_fiber, old_fat, old_cholesterol, old_calcium, old_iron, old_magnesium, \
-#     old_sodium, old_zinc, old_vitamin_a, old_thiamine, old_vitamin_e, old_riboflavin, old_niacin, old_vitamin_b6, \
-#     old_vitamin_c, old_vitamin_b12, old_selenium, old_sugar, old_vitamin_d = old_values
-#     print(old_values)
-#     print(new_items)
-#
-#     counts = pd.value_counts(new_items)
-#     unique_keys = set(new_items)
-#
-#     new_calories = 0
-#     new_protein = 0
-#     new_carbs = 0
-#     new_fiber = 0
-#     new_fat = 0
-#     new_cholesterol = 0
-#     new_calcium = 0
-#     new_iron = 0
-#     new_magnesium = 0
-#     new_sodium = 0
-#     new_zinc = 0
-#     new_vitamin_a = 0
-#     new_thiamine = 0
-#     new_vitamin_e = 0
-#     new_riboflavin = 0
-#     new_niacin = 0
-#     new_vitamin_b6 = 0
-#     new_vitamin_c = 0
-#     new_vitamin_b12 = 0
-#     new_selenium = 0
-#     new_sugar = 0
-#     new_vitamin_d = 0
-#
-#     for key in unique_keys:
-#         count = counts[key]
-#
-#         new_calories += food.foods[key]['calories'] * count
-#         new_protein += food.foods[key]['protein'] * count
-#         new_carbs += food.foods[key]['carbs'] * count
-#         new_fiber += food.foods[key]['fiber'] * count
-#         new_fat += food.foods[key]['fat'] * count
-#         new_cholesterol += food.foods[key]['cholesterol'] * count
-#         new_calcium += food.foods[key]['calcium'] * count
-#         new_iron += food.foods[key]['iron'] * count
-#         new_magnesium += food.foods[key]['magnesium'] * count
-#         new_sodium += food.foods[key]['sodium'] * count
-#         new_zinc += food.foods[key]['zinc'] * count
-#         new_vitamin_a += food.foods[key]['vitamin a'] * count
-#         new_thiamine += food.foods[key]['thiamine'] * count
-#         new_vitamin_e += food.foods[key]['vitamin e'] * count
-#         new_riboflavin += food.foods[key]['riboflavin'] * count
-#         new_niacin += food.foods[key]['niacin'] * count
-#         new_vitamin_b6 += food.foods[key]['vitamin b6'] * count
-#         new_vitamin_c += food.foods[key]['vitamin c'] * count
-#         new_vitamin_b12 += food.foods[key]['vitamin b12'] * count
-#         new_selenium += food.foods[key]['selenium'] * count
-#         new_sugar += food.foods[key]['sugar'] * count
-#         new_vitamin_d += food.foods[key]['vitamin d'] * count
-#
-#     print(new_calories, old_calories)
-#     c.execute('UPDATE QUERY GOES HERE//ALL DATA COLLECTED AND SAVED UP TO THIS POINT')
-
-
+#   BOXES
+#   ENTRIES BOX
 def table_list(db, root_win):
     conn = sql.connect(db)
     c = conn.cursor()
@@ -120,8 +54,112 @@ def table_list(db, root_win):
         tables_box.insert(tk.END, table)
 
     return tables_box
+#   NEW ITEMS BOX
+def new_items_box(root_win, new_items):
+    #   Create the new items frame.
+    new_items_frame = tk.LabelFrame(root_win, text='New Items')
+    new_items_frame.grid(row=1, column=1)
+    #   create a new list box object and populate it using the appended list
+    new_box = tk.Listbox(new_items_frame, cursor='cross', bg='grey', fg='yellow', selectbackground='green',
+                         selectmode='browse', font=('Arial', 13))
+    new_box.config(border=2, relief='sunken')
+    for new_item in new_items:
+        new_box.insert(tk.END, new_item)
 
+    return new_box
+#   MEALS BOX
+def meals_menu(root_win, menu, new_items, db):
+    #   Create the menu frame.
+    new_items_frame = tk.LabelFrame(root_win, text='Add meals...')
+    new_items_frame.grid(row=1, column=0)
 
+    #   Create the meal box object, populate it, and grid the menu within the menu frame.
+    meal_menu = tk.Listbox(new_items_frame, cursor='cross', bg='grey', fg='yellow', selectbackground='green',
+                           selectmode='browse', font=('Arial', 13))
+    meal_menu.config(border=2, relief='sunken')
+    for meal in menu:
+        meal_menu.insert(tk.END, meal)
+
+    #   Make and add a scrollbar to the meal box object.
+    menu_scrollbar = tk.Scrollbar(root_win, orient=tk.VERTICAL, command=meal_menu.yview)
+    menu_scrollbar.grid(row=1, column=1, sticky='nsw', rowspan=2)
+    meal_menu['yscrollcommand'] = menu_scrollbar.set
+
+    return meal_menu
+
+#   BRANCHES
+#   CREATE BRANCH
+#   ADDS NEW ITEM TO NEW ITEMS BOX / LIST
+def add_new_item(new_items, items, meal_box, root_win):
+    #   Add selected item to items to add list
+    new_items.append(items[selected_item(meal_box)])
+
+    new_box = new_items_box(root_win, new_items)
+    new_box.grid(row=1, column=1)
+
+    #   After adding all items, create the table in db along with data
+    rmv_btn = rem_btn(root_win, new_box, new_items)
+    rmv_btn.grid(row=3, column=0)
+    reset_btn = rst_btn(root_win, new_items)
+    reset_btn.grid(row=4, column=0)
+
+    #   Creates a new table within the main database using the current datetime.
+    def create_table(db, data):
+        timestamp = t.localtime()
+        date = f'{timestamp[0]}-{timestamp[1]}-{timestamp[2]}'
+        table_name = f'"{date}"'
+        #   Check if one has already been created for that day.
+        pass
+
+        #   Connect to main db.
+        conn = sql.connect(db)
+        c = conn.cursor()
+
+        #   Create a new table using datetime as the table name.
+        c.execute(f'drop table if exists {table_name}')
+        c.execute(
+            f'create table {table_name} (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
+            f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
+            f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
+            f'selenium int, sugar int, vitamin_d int)')
+
+        #   Populate the new table.
+        insert_data(db, table_name, data)
+#   REMOVE SELECTED ITEM FROM NEW ITEMS BOX
+def remove_item(root_win, items_box, new_items):
+    selection = selected_item(items_box)
+    new_items.pop(selection)
+    new_box = new_items_box(root_win, new_items)
+    new_box.grid(row=1, column=1)
+#   REMOVE ALL ITEMS FROM NEW BOX
+def reset_new_items(root_win, new_items):
+    new_items.clear()
+    new_box = new_items_box(root_win, new_items)
+    new_box.grid(row=1, column=1)
+#   UPDATE BRANCH
+#   Update a chosen file from a list (CALLED BY "UPD_BTN")
+def update_table(db, entries_box, entries, root_win, menu, new_items):
+    #   CLEAR SPACE
+    selection = entries[selected_item(entries_box)][0]
+    new_items.clear()
+    print(selection)
+
+    meals_box = meals_menu(root_win, menu, new_items, db)
+    meals_box.grid(row=1, column=0)
+    add_items_button = add_item_btn(new_items, menu, meals_box, root_win)
+    add_items_button.grid(row=2, column=0)
+    update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
+    update_data_button.grid(row=2, column=1)
+#   DELETE SElECTED ENTRY IN ENTRIES LIST
+def del_table(db, box, entries):
+    selection = entries[selected_item(box)][0]
+
+    conn = sql.connect(db)
+    c = conn.cursor()
+    c.execute(f'drop table "{selection}"')
+
+    box.grid_remove()
+#   VIEW BRANCH
 def view_table(db, box, entries, btn):
     selection = entries[selected_item(box)]
     file_name = 'view_selection.csv'
@@ -147,16 +185,7 @@ def view_table(db, box, entries, btn):
     box.grid_remove()
 
 
-def del_table(db, box, entries):
-    selection = entries[selected_item(box)][0]
-
-    conn = sql.connect(db)
-    c = conn.cursor()
-    c.execute(f'drop table "{selection}"')
-
-    box.grid_remove()
-
-
+#   MISC
 def selected_item(box):
     for index in box.curselection():
         return index
@@ -226,94 +255,6 @@ def insert_data(db, table, data):
     conn.commit()
 
 
-#   Creates a new table within the main database using the current datetime.
-def create_table(db, data):
-    timestamp = t.localtime()
-    date = f'{timestamp[0]}-{timestamp[1]}-{timestamp[2]}'
-    table_name = f'"{date}"'
-    #   Check if one has already been created for that day.
-    pass
-
-    #   Connect to main db.
-    conn = sql.connect(db)
-    c = conn.cursor()
-
-    #   Create a new table using datetime as the table name.
-    c.execute(f'drop table if exists {table_name}')
-    c.execute(f'create table {table_name} (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
-              f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
-              f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
-              f'selenium int, sugar int, vitamin_d int)')
-
-    #   Populate the new table.
-    insert_data(db, table_name, data)
-
-
-def new_items_box(root_win, new_items):
-    #   Create the new items frame.
-    new_items_frame = tk.LabelFrame(root_win, text='New Items')
-    new_items_frame.grid(row=1, column=1)
-    #   create a new list box object and populate it using the appended list
-    new_box = tk.Listbox(new_items_frame, cursor='cross', bg='grey', fg='yellow', selectbackground='green',
-                         selectmode='browse', font=('Arial', 13))
-    new_box.config(border=2, relief='sunken')
-    for new_item in new_items:
-        new_box.insert(tk.END, new_item)
-
-    return new_box
-
-
-# def items_to_add_box():
-#     pass
-#
-
-def add_new_item(new_items, items, meal_box, root_win, db):
-    #   Add selected item to items to add list
-    new_items.append(items[selected_item(meal_box)])
-
-    new_box = new_items_box(root_win, new_items)
-    new_box.grid(row=1, column=1)
-
-    #   After adding all items, create the table in db along with data
-    rmv_btn = rem_btn(root_win, new_box, new_items)
-    rmv_btn.grid(row=3, column=0)
-    reset_btn = rst_btn(root_win, new_items)
-    reset_btn.grid(row=4, column=0)
-
-
-def remove_item(root_win, items_box, new_items):
-    selection = selected_item(items_box)
-    new_items.pop(selection)
-    new_box = new_items_box(root_win, new_items)
-    new_box.grid(row=1, column=1)
-
-
-def meals_menu(root_win, menu, new_items, db):
-    #   Create the menu frame.
-    new_items_frame = tk.LabelFrame(root_win, text='Add meals...')
-    new_items_frame.grid(row=1, column=0)
-
-    #   Create the meal box object, populate it, and grid the menu within the menu frame.
-    meal_menu = tk.Listbox(new_items_frame, cursor='cross', bg='grey', fg='yellow', selectbackground='green',
-                           selectmode='browse', font=('Arial', 13))
-    meal_menu.config(border=2, relief='sunken')
-    for meal in menu:
-        meal_menu.insert(tk.END, meal)
-
-    #   Make and add a scrollbar to the meal box object.
-    menu_scrollbar = tk.Scrollbar(root_win, orient=tk.VERTICAL, command=meal_menu.yview)
-    menu_scrollbar.grid(row=1, column=1, sticky='nsw', rowspan=2)
-    meal_menu['yscrollcommand'] = menu_scrollbar.set
-
-    return meal_menu
-
-
-def reset_new_items(root_win, new_items):
-    new_items.clear()
-    new_box = new_items_box(root_win, new_items)
-    new_box.grid(row=1, column=1)
-
-
 def exit_loop(root_win):
     root_win.destroy()
 
@@ -323,7 +264,7 @@ def feature_branch(choice, root_win, menu, new_items, db):
     if choice == 'Create?':
         meal_box = meals_menu(root_win, menu, new_items, db)
         meal_box.grid(row=1, column=0)
-        add_btn = add_item_btn(new_items, menu, meal_box, root_win, db)
+        add_btn = add_item_btn(new_items, menu, meal_box, root_win)
         add_btn.grid(row=2, column=0)
         crt_btn = create_btn(db, new_items)
         crt_btn.grid(row=2, column=1)
@@ -355,21 +296,3 @@ def feature_branch(choice, root_win, menu, new_items, db):
     elif choice == 'Quit?':
         exit_loop(root_win)
 
-
-#   Update a chosen file from a list (CALLED BY "UPD_BTN")
-def update_table(db, entries_box, entries, root_win, menu, new_items):
-    #   CLEAR SPACE
-    selection = entries[selected_item(entries_box)][0]
-    new_items.clear()
-    print(selection)
-
-    meals_box = meals_menu(root_win, menu, new_items, db)
-    meals_box.grid(row=1, column=0)
-    add_items_button = add_item_btn(new_items, menu, meals_box, root_win, db)
-    add_items_button.grid(row=2, column=0)
-    update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
-    update_data_button.grid(row=2, column=1)
-
-#    Destroy entries box
-#     meals_box = meals_menu(root_win, menu, new_items, db)
-#     meals_box.grid(row=1, column=0)
