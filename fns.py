@@ -13,8 +13,8 @@ def add_item_btn(new_items, menu, meal_menu, root_win):
     add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win))
     return add_button
 #   CREATE NEW TABLE
-def create_btn(db, new_items):
-    create_button = tk.Button(text='CREATE', command=lambda: create_table(db, new_items))
+def create_btn(db, new_items, root_win):
+    create_button = tk.Button(text='CREATE', command=lambda: create_table(db, new_items, root_win))
     create_button.grid(row=2, column=1)
     return create_button
 #   REMOVE ITEM FROM NEW ITEMS BOX
@@ -33,7 +33,10 @@ def upd_btn(db, entries, tables, root_win, menu, new_items):
 def del_btn(db, tables_list, tables):
     delete_button = tk.Button(text='DELETE', command=lambda: del_table(db, tables_list, tables))
     return delete_button
-
+#   OPENS AN ENTRY FOR VIEW
+def view_button(db, box, entries, root_win):
+    btn = tk.Button(text='VIEW', command=lambda: view_table(db, box, entries, root_win))
+    return btn
 
 #   Boxes
 #   ENTRIES BOX
@@ -103,28 +106,30 @@ def add_new_item(new_items, items, meal_box, root_win):
     reset_btn = rst_btn(root_win, new_items)
     reset_btn.grid(row=4, column=0)
 
-    #   Creates a new table within the main database using the current datetime.
-    def create_table(db, data):
-        timestamp = t.localtime()
-        date = f'{timestamp[0]}-{timestamp[1]}-{timestamp[2]}'
-        table_name = f'"{date}"'
-        #   Check if one has already been created for that day.
-        pass
 
-        #   Connect to main db.
-        conn = sql.connect(db)
-        c = conn.cursor()
+#   CREATES NEW ENTRY IN DB USING DATETIME
+def create_table(db, data, root_win):
+    timestamp = t.localtime()
+    date = f'{timestamp[0]}-{timestamp[1]}-{timestamp[2]}'
+    table_name = f'{date}'
 
-        #   Create a new table using datetime as the table name.
-        c.execute(f'drop table if exists {table_name}')
-        c.execute(
-            f'create table {table_name} (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
-            f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
-            f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
-            f'selenium int, sugar int, vitamin_d int)')
+    #   Connect to main db.
+    conn = sql.connect(db)
+    c = conn.cursor()
 
-        #   Populate the new table.
-        insert_data(db, table_name, data)
+    #   Create a new table using datetime as the table name.
+    c.execute(f'drop table if exists "{table_name}"')
+    c.execute(
+        f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
+        f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
+        f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
+        f'selenium int, sugar int, vitamin_d int)')
+
+    #   Populate the new table.
+    insert_data(db, table_name, data)
+    clear_space(root_win)
+
+
 #   REMOVE SELECTED ITEM FROM NEW ITEMS BOX
 def remove_item(root_win, items_box, new_items):
     selection = selected_item(items_box)
@@ -160,7 +165,7 @@ def del_table(db, box, entries):
 
     box.grid_remove()
 #   View Branch
-def view_table(db, box, entries, btn):
+def view_table(db, box, entries, root_win):
     selection = entries[selected_item(box)]
     file_name = 'view_selection.csv'
 
@@ -181,8 +186,7 @@ def view_table(db, box, entries, btn):
     view_selection.to_csv(file_name, index=False)
     subprocess.call(['open', file_name])
 
-    btn.grid_remove()
-    box.grid_remove()
+    clear_space(root_win)
 
 
 #   Misc
@@ -255,6 +259,15 @@ def insert_data(db, table, data):
     conn.commit()
 
 
+def clear_space(root_win):
+    widgets = root_win.grid_slaves()
+    for idx, widget in enumerate(widgets):
+        print(idx, widget)
+    slice_of_widgets = widgets[:(len(widgets) - 2)]
+    for widget in slice_of_widgets:
+        widget.destroy()
+
+
 def exit_loop(root_win):
     root_win.destroy()
 
@@ -262,13 +275,17 @@ def exit_loop(root_win):
 #   Feature Branch.
 def feature_branch(choice, root_win, menu, new_items, db):
     if choice == 'Create?':
+        clear_space(root_win)
+
         meal_box = meals_menu(root_win, menu, new_items, db)
         meal_box.grid(row=1, column=0)
         add_btn = add_item_btn(new_items, menu, meal_box, root_win)
         add_btn.grid(row=2, column=0)
-        crt_btn = create_btn(db, new_items)
+        crt_btn = create_btn(db, new_items, root_win)
         crt_btn.grid(row=2, column=1)
     elif choice == 'Update?':
+        clear_space(root_win)
+
         entries_list = table_list(db, root_win)
         entries_list.grid(row=1, column=0)
 
@@ -283,6 +300,8 @@ def feature_branch(choice, root_win, menu, new_items, db):
         delete_button = del_btn(db, entries_list, tables)
         delete_button.grid(row=3, column=0)
     elif choice == 'View?':
+        clear_space(root_win)
+        
         tables_list = table_list(db, root_win)
         tables_list.grid(row=1, column=0)
 
@@ -291,7 +310,7 @@ def feature_branch(choice, root_win, menu, new_items, db):
         c.execute('select name from sqlite_master where type="table"')
         tables = [table for table in c.fetchall()]
 
-        view_btn = tk.Button(text='VIEW', command=lambda: view_table(db, tables_list, tables, view_btn))
+        view_btn = view_button(db, tables_list, tables, root_win)
         view_btn.grid(row=2, column=0)
     elif choice == 'Quit?':
         exit_loop(root_win)
