@@ -128,8 +128,7 @@ def create_table(db, data, root_win):
         f'selenium int, sugar int, vitamin_d int, meal text, count int)')
 
     #   Populate the new table.
-    insert_data(db, table_name, data)
-    clear_space(root_win)
+    insert_data(db, table_name, data, root_win)
 
 
 #   REMOVE SELECTED ITEM FROM NEW ITEMS BOX
@@ -159,7 +158,7 @@ def update_table(db, entries_box, entries, root_win, menu, new_items):
         meals_box.grid(row=1, column=0)
         add_items_button = add_item_btn(new_items, menu, meals_box, root_win)
         add_items_button.grid(row=2, column=0)
-        update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
+        update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items, root_win))
         update_data_button.grid(row=2, column=1)
 #   DELETE SElECTED ENTRY IN ENTRIES LIST
 def del_table(db, box, entries, root_win):
@@ -210,7 +209,7 @@ def err(root_win):
     err_box.geometry("200x200")
 
 
-def insert_data(db, table, data):
+def insert_data(db, table, data, root_win):
     conn = sql.connect(db)
     c = conn.cursor()
 
@@ -274,6 +273,7 @@ def insert_data(db, table, data):
             f'{vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, "{key}", {count})')
 
     conn.commit()
+    clear_space(root_win)
 
 
 def clear_space(root_win):
