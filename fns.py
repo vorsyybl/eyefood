@@ -146,6 +146,11 @@ def reset_new_items(root_win, new_items):
 #   UPDATE SELECTION FROM ENTRIES (CALLED BY "UPD_BTN")
 def update_table(db, entries_box, entries, root_win, menu, new_items):
     #   CLEAR SPACE
+    widgets = root_win.grid_slaves()
+    slice_of_widgets = widgets[:2]
+    for widget in slice_of_widgets:
+        widget.destroy()
+
     if selected_item(entries_box) is None:
         print("Okay")
         pop_up(root_win, 'ERROR', 'PLEASE SELECT A TABLE TO UPDATE')
