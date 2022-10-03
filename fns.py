@@ -30,8 +30,8 @@ def upd_btn(db, entries, tables, root_win, menu, new_items):
     update_button = tk.Button(text='UPDATE', command=lambda: update_table(db, entries, tables, root_win, menu, new_items))
     return update_button
 #   DELETES SELECTED TABLE FROM DB
-def del_btn(db, tables_list, tables):
-    delete_button = tk.Button(text='DELETE', command=lambda: del_table(db, tables_list, tables))
+def del_btn(db, tables_list, tables, root_win):
+    delete_button = tk.Button(text='DELETE', command=lambda: del_table(db, tables_list, tables, root_win))
     return delete_button
 #   OPENS AN ENTRY FOR VIEW
 def view_button(db, box, entries, root_win):
@@ -94,17 +94,19 @@ def meals_menu(root_win, menu, new_items, db):
 #   Create Branch
 #   ADDS NEW ITEM TO NEW ITEMS BOX / LIST
 def add_new_item(new_items, items, meal_box, root_win):
-    #   Add selected item to items to add list
-    new_items.append(items[selected_item(meal_box)])
+    if selected_item(meal_box) is None:
+        err(root_win)
+        print('PLEASE SELECT AN ITEM FROM THE AVAILABLE MEALS, OR ADD HERE: ')
+    else:
+        new_items.append(items[selected_item(meal_box)])
 
-    new_box = new_items_box(root_win, new_items)
-    new_box.grid(row=1, column=1)
-
+        new_box = new_items_box(root_win, new_items)
+        new_box.grid(row=1, column=1)
     #   After adding all items, create the table in db along with data
-    rmv_btn = rem_btn(root_win, new_box, new_items)
-    rmv_btn.grid(row=3, column=0)
-    reset_btn = rst_btn(root_win, new_items)
-    reset_btn.grid(row=4, column=0)
+        rmv_btn = rem_btn(root_win, new_box, new_items)
+        rmv_btn.grid(row=3, column=0)
+        reset_btn = rst_btn(root_win, new_items)
+        reset_btn.grid(row=4, column=0)
 
 
 #   CREATES NEW ENTRY IN DB USING DATETIME
@@ -123,7 +125,7 @@ def create_table(db, data, root_win):
         f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
         f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
         f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
-        f'selenium int, sugar int, vitamin_d int)')
+        f'selenium int, sugar int, vitamin_d int, meal text, count int)')
 
     #   Populate the new table.
     insert_data(db, table_name, data)
@@ -145,54 +147,67 @@ def reset_new_items(root_win, new_items):
 #   UPDATE SELECTION FROM ENTRIES (CALLED BY "UPD_BTN")
 def update_table(db, entries_box, entries, root_win, menu, new_items):
     #   CLEAR SPACE
-    selection = entries[selected_item(entries_box)][0]
-    new_items.clear()
-    print(selection)
+    if selected_item(entries_box) is None:
+        print("Okay")
+        err(root_win)
+    else:
+        selection = entries[selected_item(entries_box)][0]
+        new_items.clear()
+        print(selection)
 
-    meals_box = meals_menu(root_win, menu, new_items, db)
-    meals_box.grid(row=1, column=0)
-    add_items_button = add_item_btn(new_items, menu, meals_box, root_win)
-    add_items_button.grid(row=2, column=0)
-    update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
-    update_data_button.grid(row=2, column=1)
+        meals_box = meals_menu(root_win, menu, new_items, db)
+        meals_box.grid(row=1, column=0)
+        add_items_button = add_item_btn(new_items, menu, meals_box, root_win)
+        add_items_button.grid(row=2, column=0)
+        update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items))
+        update_data_button.grid(row=2, column=1)
 #   DELETE SElECTED ENTRY IN ENTRIES LIST
-def del_table(db, box, entries):
+def del_table(db, box, entries, root_win):
     selection = entries[selected_item(box)][0]
 
     conn = sql.connect(db)
     c = conn.cursor()
     c.execute(f'drop table "{selection}"')
 
-    box.grid_remove()
+    clear_space(root_win)
 #   View Branch
 def view_table(db, box, entries, root_win):
-    selection = entries[selected_item(box)]
-    file_name = 'view_selection.csv'
+    if selected_item(box) is None:
+        print('ERROR: Please select a table, or create one if needed.')
+        err(root_win)
+    else:
+        selection = entries[selected_item(box)]
+        file_name = 'view_selection.csv'
 
-    conn = sql.connect(db)
-    c = conn.cursor()
-    c.execute(f'select * from "{selection[0]}"')
-    results = c.fetchall()[0]
+        conn = sql.connect(db)
+        c = conn.cursor()
+        c.execute(f'select * from "{selection[0]}"')
+        results = c.fetchall()
 
-    calories, protein, carbs, fiber, fat, cholesterol, calcium, iron, magnesium, sodium, zinc, vitamin_a, thiamine, \
-    vitamin_e, riboflavin, niacin, vitamin_b6, vitamin_c, vitamin_b12, selenium, sugar, vitamin_d = results
-    columns = ['CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM', 'SODIUM',
-               'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6', 'VITAMIN_C',
-               'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D']
-    values = [calories, protein, carbs, fiber, fat, cholesterol, calcium, iron, magnesium, sodium, zinc, vitamin_a,
-              thiamine, vitamin_e, riboflavin, niacin, vitamin_b6, vitamin_c, vitamin_b12, selenium, sugar, vitamin_d]
-    view_selection = pd.DataFrame([values], columns=columns)
+        columns = ['CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
+                   'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6', 'VITAMIN_C',
+                   'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'MEAL', 'COUNT']
+        view_selection = pd.DataFrame(columns=columns)
 
-    view_selection.to_csv(file_name, index=False)
-    subprocess.call(['open', file_name])
+        for result in results:
+            result = list(result)
+            view_selection.loc[len(view_selection)] = result
+
+        view_selection.to_csv(file_name, index=False)
+        subprocess.call(['open', file_name])
 
     clear_space(root_win)
-
 
 #   Misc
 def selected_item(box):
     for index in box.curselection():
         return index
+
+
+def err(root_win):
+    err_box = tk.Toplevel(root_win)
+    err_box.title("ERROR")
+    err_box.geometry("200x200")
 
 
 def insert_data(db, table, data):
@@ -201,32 +216,34 @@ def insert_data(db, table, data):
 
     counts = pd.value_counts(data)
     unique_keys = set(data)
-
-    calories = 0
-    protein = 0
-    carbs = 0
-    fiber = 0
-    fat = 0
-    cholesterol = 0
-    calcium = 0
-    iron = 0
-    magnesium = 0
-    sodium = 0
-    zinc = 0
-    vitamin_a = 0
-    thiamine = 0
-    vitamin_e = 0
-    riboflavin = 0
-    niacin = 0
-    vitamin_b6 = 0
-    vitamin_c = 0
-    vitamin_b12 = 0
-    selenium = 0
-    sugar = 0
-    vitamin_d = 0
+    print(counts)
+    print(unique_keys)
 
     for key in unique_keys:
         count = counts[key]
+
+        calories = 0
+        protein = 0
+        carbs = 0
+        fiber = 0
+        fat = 0
+        cholesterol = 0
+        calcium = 0
+        iron = 0
+        magnesium = 0
+        sodium = 0
+        zinc = 0
+        vitamin_a = 0
+        thiamine = 0
+        vitamin_e = 0
+        riboflavin = 0
+        niacin = 0
+        vitamin_b6 = 0
+        vitamin_c = 0
+        vitamin_b12 = 0
+        selenium = 0
+        sugar = 0
+        vitamin_d = 0
 
         calories += food.foods[key]['calories'] * count
         protein += food.foods[key]['protein'] * count
@@ -251,18 +268,18 @@ def insert_data(db, table, data):
         sugar += food.foods[key]['sugar'] * count
         vitamin_d += food.foods[key]['vitamin d'] * count
 
-    c.execute(
-        f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
-        f'{magnesium}, {sodium}, {zinc}, {vitamin_a}, {thiamine}, {vitamin_e}, {riboflavin}, {niacin}, {vitamin_b6}, '
-        f'{vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d})')
+        c.execute(
+            f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
+            f'{magnesium}, {sodium}, {zinc}, {vitamin_a}, {thiamine}, {vitamin_e}, {riboflavin}, {niacin}, {vitamin_b6}, '
+            f'{vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, "{key}", {count})')
 
     conn.commit()
 
 
 def clear_space(root_win):
     widgets = root_win.grid_slaves()
-    for idx, widget in enumerate(widgets):
-        print(idx, widget)
+    # for idx, widget in enumerate(widgets):
+    #     print(idx, widget)
     slice_of_widgets = widgets[:(len(widgets) - 2)]
     for widget in slice_of_widgets:
         widget.destroy()
@@ -297,11 +314,11 @@ def feature_branch(choice, root_win, menu, new_items, db):
         #   Buttons.
         update_button = upd_btn(db, entries_list, tables, root_win, menu, new_items)
         update_button.grid(row=2, column=0)
-        delete_button = del_btn(db, entries_list, tables)
+        delete_button = del_btn(db, entries_list, tables, root_win)
         delete_button.grid(row=3, column=0)
     elif choice == 'View?':
         clear_space(root_win)
-        
+
         tables_list = table_list(db, root_win)
         tables_list.grid(row=1, column=0)
 
