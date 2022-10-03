@@ -125,7 +125,7 @@ def create_table(db, data, root_win):
         f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
         f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
         f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
-        f'selenium int, sugar int, vitamin_d int, meal text, count int)')
+        f'selenium int, sugar int, vitamin_d int, meal text constraint pk primary key, count int)')
 
     #   Populate the new table.
     insert_data(db, table_name, data, root_win)
@@ -148,11 +148,10 @@ def update_table(db, entries_box, entries, root_win, menu, new_items):
     #   CLEAR SPACE
     if selected_item(entries_box) is None:
         print("Okay")
-        err(root_win)
+        pop_up(root_win, 'ERROR', 'PLEASE SELECT A TABLE TO UPDATE')
     else:
         selection = entries[selected_item(entries_box)][0]
         new_items.clear()
-        print(selection)
 
         meals_box = meals_menu(root_win, menu, new_items, db)
         meals_box.grid(row=1, column=0)
@@ -162,13 +161,16 @@ def update_table(db, entries_box, entries, root_win, menu, new_items):
         update_data_button.grid(row=2, column=1)
 #   DELETE SElECTED ENTRY IN ENTRIES LIST
 def del_table(db, box, entries, root_win):
-    selection = entries[selected_item(box)][0]
+    if selected_item(box) is None:
+        pop_up(root_win, 'ERROR', 'PLEASE SELECT A TABLE TO DELETE')
+    else:
+        selection = entries[selected_item(box)][0]
 
-    conn = sql.connect(db)
-    c = conn.cursor()
-    c.execute(f'drop table "{selection}"')
+        conn = sql.connect(db)
+        c = conn.cursor()
+        c.execute(f'drop table "{selection}"')
 
-    clear_space(root_win)
+        clear_space(root_win)
 #   View Branch
 def view_table(db, box, entries, root_win):
     if selected_item(box) is None:
@@ -203,10 +205,12 @@ def selected_item(box):
         return index
 
 
-def err(root_win):
-    err_box = tk.Toplevel(root_win)
-    err_box.title("ERROR")
-    err_box.geometry("200x200")
+def pop_up(root_win, title, message):
+    window = tk.Toplevel(root_win)
+    window.title(title)
+    window.geometry("242x200")
+    label = tk.Label(window, text=message)
+    label.grid(row=0, column=0)
 
 
 def insert_data(db, table, data, root_win):
