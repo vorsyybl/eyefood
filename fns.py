@@ -8,9 +8,9 @@ import subprocess
 
 #   Buttons
 #   ADD FIRST ITEM TO NEW ITEM BOX
-def add_item_btn(new_items, menu, meal_menu, root_win):
+def add_item_btn(new_items, menu, meal_menu, root_win, db):
     #   Meal Menu Buttons.
-    add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win))
+    add_button = tk.Button(text='ADD', command=lambda: add_new_item(new_items, menu, meal_menu, root_win, db))
     return add_button
 #   CREATE NEW TABLE
 def create_btn(db, new_items, root_win):
@@ -93,9 +93,9 @@ def meals_menu(root_win, menu, new_items, db):
 #   Branches
 #   Create Branch
 #   ADDS NEW ITEM TO NEW ITEMS BOX / LIST
-def add_new_item(new_items, items, meal_box, root_win):
+def add_new_item(new_items, items, meal_box, root_win, db):
     if selected_item(meal_box) is None:
-        err(root_win)
+        pop_up(root_win, "ERROR", "PLEASE PICK A MEAL TO ADD")
         print('PLEASE SELECT AN ITEM FROM THE AVAILABLE MEALS, OR ADD HERE: ')
     else:
         new_items.append(items[selected_item(meal_box)])
@@ -125,10 +125,11 @@ def create_table(db, data, root_win):
         f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
         f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
         f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
-        f'selenium int, sugar int, vitamin_d int, meal text constraint pk primary key, count int)')
+        f'selenium int, sugar int, vitamin_d int, meal text, count int)')
 
     #   Populate the new table.
     insert_data(db, table_name, data, root_win)
+    pop_up(root_win, "SUCCESS", f"Entry '{table_name}' created.", "350x100")
 
 
 #   REMOVE SELECTED ITEM FROM NEW ITEMS BOX
@@ -160,7 +161,7 @@ def update_table(db, entries_box, entries, root_win, menu, new_items):
 
         meals_box = meals_menu(root_win, menu, new_items, db)
         meals_box.grid(row=1, column=0)
-        add_items_button = add_item_btn(new_items, menu, meals_box, root_win)
+        add_items_button = add_item_btn(new_items, menu, meals_box, root_win, db)
         add_items_button.grid(row=2, column=0)
         update_data_button = tk.Button(text='UPDATE DATA', command=lambda: insert_data(db, selection, new_items, root_win))
         update_data_button.grid(row=2, column=1)
@@ -175,7 +176,9 @@ def del_table(db, box, entries, root_win):
         c = conn.cursor()
         c.execute(f'drop table "{selection}"')
 
+        pop_up(root_win, "SUCCESS", f"'{selection}' DELETED.", "300x100")
         clear_space(root_win)
+
 #   View Branch
 def view_table(db, box, entries, root_win):
     if selected_item(box) is None:
@@ -210,11 +213,11 @@ def selected_item(box):
         return index
 
 
-def pop_up(root_win, title, message):
+def pop_up(root_win, title, message, size):
     window = tk.Toplevel(root_win)
     window.title(title)
-    window.geometry("242x200")
-    label = tk.Label(window, text=message)
+    window.geometry(size)
+    label = tk.Label(window, text=message, font=['Arial', 30])
     label.grid(row=0, column=0)
 
 
@@ -224,8 +227,8 @@ def insert_data(db, table, data, root_win):
 
     counts = pd.value_counts(data)
     unique_keys = set(data)
-    print(counts)
-    print(unique_keys)
+    # print(counts)
+    # print(unique_keys)
 
     for key in unique_keys:
         count = counts[key]
@@ -305,7 +308,7 @@ def feature_branch(choice, root_win, menu, new_items, db):
 
         meal_box = meals_menu(root_win, menu, new_items, db)
         meal_box.grid(row=1, column=0)
-        add_btn = add_item_btn(new_items, menu, meal_box, root_win)
+        add_btn = add_item_btn(new_items, menu, meal_box, root_win, db)
         add_btn.grid(row=2, column=0)
         crt_btn = create_btn(db, new_items, root_win)
         crt_btn.grid(row=2, column=1)
