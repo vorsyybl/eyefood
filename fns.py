@@ -124,7 +124,7 @@ def create_table(db, data, root_win):
     c.execute(
         f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
         f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
-        f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, vitamin_c int, vitamin_b12 int, '
+        f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, folate int, vitamin_c int, vitamin_b12 int, '
         f'selenium int, sugar int, vitamin_d int, meal text, count int)')
 
     #   Populate the new table.
@@ -194,8 +194,8 @@ def view_table(db, box, entries, root_win):
         results = c.fetchall()
 
         columns = ['CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
-                   'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6', 'VITAMIN_C',
-                   'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'MEAL', 'COUNT']
+                   'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6',
+                   'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'MEAL', 'COUNT']
         view_selection = pd.DataFrame(columns=columns)
 
         for result in results:
@@ -250,6 +250,7 @@ def insert_data(db, table, data, root_win):
         riboflavin = 0
         niacin = 0
         vitamin_b6 = 0
+        folate = 0
         vitamin_c = 0
         vitamin_b12 = 0
         selenium = 0
@@ -273,6 +274,7 @@ def insert_data(db, table, data, root_win):
         riboflavin += food.foods[key]['riboflavin'] * count
         niacin += food.foods[key]['niacin'] * count
         vitamin_b6 += food.foods[key]['vitamin b6'] * count
+        folate += food.foods[key]['folate'] * count
         vitamin_c += food.foods[key]['vitamin c'] * count
         vitamin_b12 += food.foods[key]['vitamin b12'] * count
         selenium += food.foods[key]['selenium'] * count
@@ -282,7 +284,7 @@ def insert_data(db, table, data, root_win):
         c.execute(
             f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
             f'{magnesium}, {sodium}, {zinc}, {vitamin_a}, {thiamine}, {vitamin_e}, {riboflavin}, {niacin}, {vitamin_b6}, '
-            f'{vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, "{key}", {count})')
+            f'{folate}, {vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, "{key}", {count})')
 
     conn.commit()
     clear_space(root_win)
