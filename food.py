@@ -346,7 +346,7 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 2,
-        'vitamin d': 5
+        'vitamin d': 0
     },
     'apples': {
         'quantity': 1,
@@ -430,7 +430,7 @@ foods = {
         'vitamin b12': 0,
         'selenium': 1,
         'sugar': 2,
-        'vitamin d': 5
+        'vitamin d': 0
     },
     'cherries': {
         'quantity': 0.5,
