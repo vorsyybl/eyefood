@@ -1,7 +1,7 @@
 import tkinter as tk
 import sqlite3 as sql
 import pandas as pd
-import food
+import food as fd
 import time as t
 import os
 
@@ -305,6 +305,14 @@ def exit_loop(root_win):
     root_win.destroy()
 
 
+def add_new_food(root_win):
+    print(fd.foods['swai'])
+    for metric in fd.foods['swai']:
+        print(metric)
+        pop_up(root_win, metric, 'How many in One Serving?', '800x200')
+
+
+
 #   Feature Branch.
 def feature_branch(choice, root_win, menu, new_items, db):
     if choice == 'Create?':
@@ -345,6 +353,12 @@ def feature_branch(choice, root_win, menu, new_items, db):
 
         view_btn = view_button(db, tables_list, tables, root_win)
         view_btn.grid(row=2, column=0)
+    elif choice == 'Add?':
+        print("hello, world!")
+        add_new_food(root_win)
+    elif choice == 'Analyze?':
+        print('analyze')
     elif choice == 'Quit?':
         exit_loop(root_win)
+
 
