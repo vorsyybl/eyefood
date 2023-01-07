@@ -37,6 +37,9 @@ def del_btn(db, tables_list, tables, root_win):
 def view_button(db, box, entries, root_win):
     btn = tk.Button(text='VIEW', command=lambda: view_table(db, box, entries, root_win))
     return btn
+def analyze_button(db, box, entries, root_win):
+    btn = tk.Button(text='analyze', command=lambda: analyze_table(db, box, entries, root_win))
+    return btn
 
 #   Boxes
 #   ENTRIES BOX
@@ -259,29 +262,29 @@ def insert_data(db, table, data, root_win):
         sugar = 0
         vitamin_d = 0
 
-        calories += food.foods[key]['calories'] * count
-        protein += food.foods[key]['protein'] * count
-        carbs += food.foods[key]['carbs'] * count
-        fiber += food.foods[key]['fiber'] * count
-        fat += food.foods[key]['fat'] * count
-        cholesterol += food.foods[key]['cholesterol'] * count
-        calcium += food.foods[key]['calcium'] * count
-        iron += food.foods[key]['iron'] * count
-        magnesium += food.foods[key]['magnesium'] * count
-        sodium += food.foods[key]['sodium'] * count
-        zinc += food.foods[key]['zinc'] * count
-        vitamin_a += food.foods[key]['vitamin a'] * count
-        thiamine += food.foods[key]['thiamine'] * count
-        vitamin_e += food.foods[key]['vitamin e'] * count
-        riboflavin += food.foods[key]['riboflavin'] * count
-        niacin += food.foods[key]['niacin'] * count
-        vitamin_b6 += food.foods[key]['vitamin b6'] * count
-        folate += food.foods[key]['folate'] * count
-        vitamin_c += food.foods[key]['vitamin c'] * count
-        vitamin_b12 += food.foods[key]['vitamin b12'] * count
-        selenium += food.foods[key]['selenium'] * count
-        sugar += food.foods[key]['sugar'] * count
-        vitamin_d += food.foods[key]['vitamin d'] * count
+        calories += fd.foods[key]['calories'] * count
+        protein += fd.foods[key]['protein'] * count
+        carbs += fd.foods[key]['carbs'] * count
+        fiber += fd.foods[key]['fiber'] * count
+        fat += fd.foods[key]['fat'] * count
+        cholesterol += fd.foods[key]['cholesterol'] * count
+        calcium += fd.foods[key]['calcium'] * count
+        iron += fd.foods[key]['iron'] * count
+        magnesium += fd.foods[key]['magnesium'] * count
+        sodium += fd.foods[key]['sodium'] * count
+        zinc += fd.foods[key]['zinc'] * count
+        vitamin_a += fd.foods[key]['vitamin a'] * count
+        thiamine += fd.foods[key]['thiamine'] * count
+        vitamin_e += fd.foods[key]['vitamin e'] * count
+        riboflavin += fd.foods[key]['riboflavin'] * count
+        niacin += fd.foods[key]['niacin'] * count
+        vitamin_b6 += fd.foods[key]['vitamin b6'] * count
+        folate += fd.foods[key]['folate'] * count
+        vitamin_c += fd.foods[key]['vitamin c'] * count
+        vitamin_b12 += fd.foods[key]['vitamin b12'] * count
+        selenium += fd.foods[key]['selenium'] * count
+        sugar += fd.foods[key]['sugar'] * count
+        vitamin_d += fd.foods[key]['vitamin d'] * count
 
         c.execute(
             f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
@@ -306,11 +309,35 @@ def exit_loop(root_win):
 
 
 def add_new_food(root_win):
-    print(fd.foods['swai'])
-    for metric in fd.foods['swai']:
-        print(metric)
-        pop_up(root_win, metric, 'How many in One Serving?', '800x200')
+    values = fd.foods['swai']
 
+    window = tk.Toplevel(root_win)
+    window.title('ENTER FOOD DETAILS')
+    window.geometry('800x600')
+    label = tk.Label(window, text='ENTER FOOD DETAILS', font=['Arial', 30])
+    label.grid(row=0, column=0)
+
+    for value in values:
+        print(value)
+
+
+def analyze_table(db, box, entries, root_win):
+    selection = entries[selected_item(box)]
+    print(selection)
+
+    # X, save them to a list
+    for key in fd.daily_doses:
+        nums = fd.daily_doses[key]
+
+        # print(key, nums)
+
+    conn = sql.connect(db)
+    c = conn.cursor()
+    #   next step: group each column sum of each columns rows....save each to variable....save them to a list
+    c.execute(f'select*from "{selection[0]}"')
+    results = c.fetchall()
+
+    print(results)
 
 
 #   Feature Branch.
@@ -354,10 +381,20 @@ def feature_branch(choice, root_win, menu, new_items, db):
         view_btn = view_button(db, tables_list, tables, root_win)
         view_btn.grid(row=2, column=0)
     elif choice == 'Add?':
-        print("hello, world!")
         add_new_food(root_win)
     elif choice == 'Analyze?':
-        print('analyze')
+        clear_space(root_win)
+
+        tables = table_list(db, root_win)
+        tables.grid(row=0, column=1)
+
+        conn = sql.connect(db)
+        c = conn.cursor()
+        c.execute('select name from sqlite_master where type="table"')
+        tables_list = [table for table in c.fetchall()]
+
+        btn = analyze_button(db, tables, tables_list, root_win)
+        btn.grid(row=2, column=0)
     elif choice == 'Quit?':
         exit_loop(root_win)
 
