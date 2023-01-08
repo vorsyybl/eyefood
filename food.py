@@ -5,35 +5,30 @@ all_nuts = (
         'vitamin c', 'vitamin b12', 'selenium', 'sugar', 'vitamin d')
 
 daily_doses = {
-    'fiber': (38, 'grams'),
-    'carbs': (413, 'grams'),
-    'fat': (80, 'grams'),
-    'protein': (270, 'grams'),
-    'vitamin a': (900, 'ug', 3000),
-    'vitamin d': (5, 'ug', 50),
-    'vitamin e': (15, 'mg', 1000),
-    'vitamin k': (120, 'ug'),
-    'vitamin c': (120, 'ug', 1000),
-    'thiamine': (1.2, 'mg'),
-    'riboflavin': (1.2, 'mg'),
-    'niacin': (16, 'mg', 35),
-    'folate': (400, 'ug', 1000),
-    'vitamin b6': (1.3, 'mg', 100),
-    'vitamin b12': (2.4, 'ug'),
-    'biotin': (30, 'mg'),
-    'sodium': (1500, 'mg', 2300),
+    'calories': (3500, 'kilojoules', 4500),
+    'protein': (140, 'grams', 0),
+    'carbs': (280, 'grams', 0),
+    'fiber': (38, 'grams', 0),
+    'fat': (100, 'grams', 0),
+    'cholesterol': (0, 'mg', 300),
     'calcium': (1000, 'mg', 2500),
-    'phosphorus': (700, 'mg', 4000),
-    'magnesium': (400, 'mg', 350),
-    'potassium': (4700, 'mg'),
-    'iron': (8, 'mg'),
+    'iron': (8, 'mg', 0),
+    'magnesium': (420, 'mg', 350),
+    'sodium': (2300, 'mg', 2300),
     'zinc': (11, 'mg', 40),
+    'vitamin a': (900, 'ug', 3000),
+    'thiamine': (1.2, 'mg', 0),
+    'vitamin e': (15, 'mg', 1000),
+    'riboflavin': (1.2, 'mg', 0),
+    'niacin': (16, 'mg', 35),
+    'vitamin b6': (1.3, 'mg', 100),
+    'folate': (400, 'ug', 1000),
+    'vitamin c': (120, 'ug', 2000),
+    'vitamin b12': (2.4, 'ug', 0),
     'selenium': (0, 'ug', 400),
-    'calories': 3500,
     'sugar': (0, 'g', 50),
-    'cholesterol': (0, 'mg', 300)
+    'vitamin d': (5, 'ug', 50)
 }
-
 
 foods = {
     'whole wheat (Arnold)': {
