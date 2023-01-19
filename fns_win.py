@@ -323,22 +323,30 @@ def add_new_food(root_win):
 
 def analyze_table(db, box, entries, root_win):
     selection = entries[selected_item(box)]
-    print(selection)
 
-    # X, save them to a list
-    for key in fd.daily_doses:
-        nums = fd.daily_doses[key]
-
-        # print(key, nums)
+    daily_targets = [fd.daily_doses[key] for key in fd.daily_doses]
+    targets = [target[0] for target in daily_targets]
+    targets.insert(0, 'TARGET')
 
     conn = sql.connect(db)
     c = conn.cursor()
-    #   next step: group each column sum of each columns rows....save each to variable....save them to a list
-    c.execute(f'select*from "{selection[0]}"')
+    c.execute(f'select sum("CALORIES"), sum("PROTEIN"), sum("CARBS"), sum("FIBER"), sum("FAT"), sum("CHOLESTEROL"), sum("CALCIUM"), sum("IRON"), sum("MAGNESIUM"), sum("SODIUM"), sum("ZINC"), sum("VITAMIN_A"), sum("THIAMINE"), sum("VITAMIN_E"), sum("RIBOFLAVIN"), sum("NIACIN"), sum("VITAMIN_B6"), sum("FOLATE"), sum("VITAMIN_C"), sum("VITAMIN_B1"), sum("SELENIUM"), sum("SUGAR"), sum("VITAMIN_D") from "{selection[0]}"')
     results = c.fetchall()
+    sums = [num for num in results[0]]
+    sums.insert(0, 'ACTUAL')
 
-    print(results)
+    columns = ['VALUE', 'CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
+               'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6',
+               'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D']
+    analysis = pd.DataFrame(columns=columns)
+    print(targets)
+    analysis.loc[len(analysis)] = sums
+    analysis.loc[len(analysis)] = targets
 
+    analysis.to_csv('analysis.csv', index=False)
+    os.startfile(f'C:\\Users\\ray_a\\Desktop\\.MAIN\\PROJECTS\\eyefood\\analysis.csv')
+
+    clear_space(root_win)
 
 #   Feature Branch.
 def feature_branch(choice, root_win, menu, new_items, db):
