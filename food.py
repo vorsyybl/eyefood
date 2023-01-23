@@ -8,13 +8,13 @@ daily_doses = {
     'calories': (3500, 'kilojoules', 4500),
     'protein': (140, 'grams', 0),
     'carbs': (280, 'grams', 0),
-    'fiber': (30, 'grams', 0),
+    'fiber': (38, 'grams', 0),
     'fat': (100, 'grams', 0),
     'cholesterol': (0, 'mg', 300),
     'calcium': (1000, 'mg', 2500),
     'iron': (8, 'mg', 0),
     'magnesium': (420, 'mg', 350),
-    'sodium': (2300, 'mg', 2300),
+    'sodium': (1300, 'mg', 2300),
     'zinc': (11, 'mg', 40),
     'vitamin a': (900, 'ug', 3000),
     'thiamine': (1.2, 'mg', 0),
@@ -27,7 +27,8 @@ daily_doses = {
     'vitamin b12': (2.4, 'ug', 0),
     'selenium': (0, 'ug', 400),
     'sugar': (0, 'g', 50),
-    'vitamin d': (600, 'IU', 4000)
+    'vitamin d': (600, 'IU', 4000),
+    'potassium': (3400, 'mg', 6000)
 }
 
 foods = {
@@ -130,7 +131,6 @@ foods = {
         'calcium': 0,
         'iron': 0.09,
         'magnesium': 0,
-        'potassium': 0,
         'sodium': 0,
         'zinc': 0,
         'vitamin a': 0,
@@ -146,6 +146,7 @@ foods = {
         'cholesterol': 0,
         'sugar': 2,
         'vitamin d': 0,
+        'potassium': 0
     },
     'tri-color penne (Barilla)': {
         'quantity': 1,
@@ -275,7 +276,6 @@ foods = {
         'calcium': 0,
         'iron': 0,
         'magnesium': 0,
-        'potassium': 0,
         'sodium': 0,
         'zinc': 0,
         'vitamin a': 0,
@@ -289,7 +289,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 0,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 0
     },
     'grapefruit': {
         'quantity': 0.5,
@@ -320,8 +321,10 @@ foods = {
         'vitamin d': 5
     },
     'strawberries': {
-        'quantity': 0.5,
-        'measure': 'cup',
+        'quantity': 1,
+        'measure': 'serving',
+        'weight': 2,
+        'unit': 'g',
         'calories': 23,
         'protein': 0,
         'carbs': 6,
@@ -331,7 +334,6 @@ foods = {
         'calcium': 12,
         'iron': 0.3,
         'magnesium': 9,
-        'potassium': 110,
         'sodium': 1,
         'zinc': 0.10,
         'vitamin a': 1,
@@ -345,7 +347,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 2,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 110
     },
     'apples': {
         'quantity': 1,
@@ -406,6 +409,8 @@ foods = {
     'banana': {
         'quantity': 1,
         'measure': 'item',
+        'weight': 118,
+        'unit': 'g',
         'calories': 105,
         'protein': 1,
         'carbs': 27,
@@ -415,7 +420,6 @@ foods = {
         'calcium': 6,
         'iron': 0.31,
         'magnesium': 32,
-        'potassium': 422,
         'sodium': 1,
         'zinc': 0.18,
         'vitamin a': 4,
@@ -429,7 +433,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 1,
         'sugar': 14,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 422
     },
     'cherries': {
         'quantity': 0.5,
@@ -1091,7 +1096,6 @@ foods = {
         'calcium': 20,
         'iron': 1.5,
         'magnesium': 0,
-        'potassium': 150,
         'sodium': 0,
         'zinc': 0.0,
         'vitamin a': 0,
@@ -1105,7 +1109,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 1,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 150
     },
     'chicken soup': {
         'quantity': 1,
@@ -1355,7 +1360,6 @@ foods = {
         'calcium': 0,
         'iron': 0,
         'magnesium': 0,
-        'potassium': 0,
         'sodium': 15,
         'zinc': 0.0,
         'vitamin a': 0,
@@ -1369,7 +1373,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 0,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 0
     },
     'ground beef': {
         'quantity': 3,
@@ -1681,7 +1686,6 @@ foods = {
         'calcium': 0,
         'iron': 1.6,
         'magnesium': 0,
-        'potassium': 170,
         'sodium': 85,
         'zinc': 1.92,
         'vitamin a': 0,
@@ -1695,7 +1699,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 4,
         'sugar': 1,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 170
     },
     'peanut butter': {
         'quantity': 2,
@@ -1981,7 +1986,6 @@ foods = {
         'calcium': 11,
         'iron': .6,
         'magnesium': 16,
-        'potassium': 327,
         'sodium': 4,
         'zinc': .21,
         'vitamin a': 0,
@@ -1995,7 +1999,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 0,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 327
     },
     'spring mix': {
         'quantity': 1,
@@ -2219,7 +2224,6 @@ foods = {
         'calcium': 0,
         'iron': 0,
         'magnesium': 0,
-        'potassium': 0,
         'sodium': 0,
         'zinc': 0,
         'vitamin a': 0,
@@ -2233,7 +2237,8 @@ foods = {
         'vitamin b12': 0,
         'selenium': 0,
         'sugar': 0,
-        'vitamin d': 0
+        'vitamin d': 0,
+        'potassium': 0
     },
     'Pinto Beans': {
         'quantity': 1,
