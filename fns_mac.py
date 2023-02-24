@@ -128,7 +128,7 @@ def create_table(db, data, root_win):
         f'create table "{table_name}" (calories int, protein int, carbs int, fiber int, fat int, cholesterol int, '
         f'calcium int, iron int, magnesium int, sodium int, zinc int, vitamin_a int, thiamine int, '
         f'vitamin_e int, riboflavin int, niacin int, vitamin_b6 int, folate int, vitamin_c int, vitamin_b12 int, '
-        f'selenium int, sugar int, vitamin_d int, meal text, count int)')
+        f'selenium int, sugar int, vitamin_d int, potassium int, meal text, count int)')
 
     #   Populate the new table.
     insert_data(db, table_name, data, root_win)
@@ -259,6 +259,7 @@ def insert_data(db, table, data, root_win):
         selenium = 0
         sugar = 0
         vitamin_d = 0
+        potassium = 0
 
         calories += fd.foods[key]['calories'] * count
         protein += fd.foods[key]['protein'] * count
@@ -283,6 +284,7 @@ def insert_data(db, table, data, root_win):
         selenium += fd.foods[key]['selenium'] * count
         sugar += fd.foods[key]['sugar'] * count
         vitamin_d += fd.foods[key]['vitamin d'] * count
+        potassium += fd.foods[key]['potassium'] * count
 
         c.execute(
             f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
@@ -319,19 +321,20 @@ def analyze_table(db, box, entries, root_win):
 
     conn = sql.connect(db)
     c = conn.cursor()
-    c.execute(f'select sum("CALORIES"), sum("PROTEIN"), sum("CARBS"), sum("FIBER"), sum("FAT"), sum("CHOLESTEROL"), sum("CALCIUM"), sum("IRON"), sum("MAGNESIUM"), sum("SODIUM"), sum("ZINC"), sum("VITAMIN_A"), sum("THIAMINE"), sum("VITAMIN_E"), sum("RIBOFLAVIN"), sum("NIACIN"), sum("VITAMIN_B6"), sum("FOLATE"), sum("VITAMIN_C"), sum("VITAMIN_B1"), sum("SELENIUM"), sum("SUGAR"), sum("VITAMIN_D") from "{selection[0]}"')
+    c.execute(f'select sum("CALORIES"), sum("PROTEIN"), sum("CARBS"), sum("FIBER"), sum("FAT"), sum("CHOLESTEROL"), sum("CALCIUM"), sum("IRON"), sum("MAGNESIUM"), sum("SODIUM"), sum("ZINC"), sum("VITAMIN_A"), sum("THIAMINE"), sum("VITAMIN_E"), sum("RIBOFLAVIN"), sum("NIACIN"), sum("VITAMIN_B6"), sum("FOLATE"), sum("VITAMIN_C"), sum("VITAMIN_B1"), sum("SELENIUM"), sum("SUGAR"), sum("VITAMIN_D"), sum("POTASSIUM") from "{selection[0]}"')
     results = c.fetchall()
     sums = [num for num in results[0]]
     sums.insert(0, 'ACTUAL')
 
     columns = ['VALUE', 'CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
                'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6',
-               'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D']
+               'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'POTASSIUM']
     analysis = pd.DataFrame(columns=columns)
     analysis.loc[len(analysis)] = sums
     analysis.loc[len(analysis)] = targets
 
     analysis.to_csv('analysis.csv', index=False)
+
     subprocess.call(['open', 'analysis.csv'])
 
     clear_space(root_win)
