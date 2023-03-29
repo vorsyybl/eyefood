@@ -196,9 +196,9 @@ def view_table(db, box, entries, root_win):
         c.execute(f'select * from "{selection[0]}"')
         results = c.fetchall()
 
-        columns = ['CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
+        columns = ['MEAL', 'COUNT', 'CALORIES', 'PROTEIN', 'CARBS', 'FIBER', 'FAT', 'CHOLESTEROL', 'CALCIUM', 'IRON', 'MAGNESIUM',
                    'SODIUM', 'ZINC', 'VITAMIN_A', 'THIAMINE', 'VITAMIN_E', 'RIBOFLAVIN', 'NIACIN', 'VITAMIN_B6',
-                   'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'POTASSIUM', 'MEAL', 'COUNT']
+                   'FOLATE', 'VITAMIN_C', 'VITAMIN_B12', 'SELENIUM', 'SUGAR', 'VITAMIN_D', 'POTASSIUM']
         view_selection = pd.DataFrame(columns=columns)
 
         for result in results:
@@ -287,9 +287,9 @@ def insert_data(db, table, data, root_win):
         potassium += fd.foods[key]['potassium'] * count
 
         c.execute(
-            f'insert into "{table}" values ({calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
+            f'insert into "{table}" values ("{key}", {count}, {calories}, {protein}, {carbs}, {fiber}, {fat}, {cholesterol}, {calcium}, {iron}, '
             f'{magnesium}, {sodium}, {zinc}, {vitamin_a}, {thiamine}, {vitamin_e}, {riboflavin}, {niacin}, {vitamin_b6}, '
-            f'{folate}, {vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, {potassium}, "{key}", {count})')
+            f'{folate}, {vitamin_c}, {vitamin_b12}, {selenium}, {sugar}, {vitamin_d}, {potassium})')
 
     conn.commit()
     clear_space(root_win)
