@@ -391,7 +391,7 @@ foods = {
         'iron': 1.5,
         'magnesium': 0,
         'sodium': 0,
-        'zinc': 5.9,
+        'zinc': 1.5,
         'vitamin a': 0,
         'thiamine': .2,
         'vitamin e': 0,
