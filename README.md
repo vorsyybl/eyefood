@@ -5,3 +5,5 @@ I.) Eyefood - A simple tool to gain insight into one's diet.
       i.) Open terminal/CMD and move towards directory that contains the folder.
       ii.) Run "eyefood.py" in terminal/CMD.
       iii.) Use the various features. Files will be saved in working directory.
+  c.) Example:
+      i.) Screenshot.
